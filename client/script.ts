@@ -37,6 +37,7 @@ let sequence = [
     'a',
     'g'
 ];
+let delayTimeMilliSec = 250;
 
 function delay(time) {
     return new Promise(resolve => { setTimeout(() => resolve(''), time); });
@@ -45,7 +46,7 @@ function delay(time) {
 async function test_play() {
     for(let i=0; i<sequence.length; i++){
        pianoSounds[sequence[i]].play();
-       await delay(1000);
+       await delay(delayTimeMilliSec);
        pianoSounds[sequence[i]].pause();
        pianoSounds[sequence[i]].currentTime = 0;
     }    
