@@ -2,6 +2,100 @@ let b = new Audio('/sounds/piano_B.mp3')
 let c = new Audio('/sounds/softmiddleC.wav')
 let train = new Audio('/sounds/train.mp3')
 // document.body.appendChild(b);
+let keypressed:{[key:string]: boolean} = {
+    z: false, 
+    x: false, 
+    c: false, 
+    v: false,
+    b: false,
+    n: false,
+    m: false
+};
+document.body.addEventListener('keydown', (e) =>{
+    switch(e.key){
+        case 'z':
+            if(!keypressed['z']){
+                pianoSounds.c.play();
+                keypressed['z'] = true;
+            }
+            break;
+        case 'x':
+            if(!keypressed['x']){
+                pianoSounds.d.play();
+                keypressed['x'] = true;
+            }
+            break;
+        case 'c':
+            if(!keypressed['c']){
+                pianoSounds.e.play();
+                keypressed['c'] = true;
+            }
+            break;
+        case 'v':
+            if(!keypressed['v']){
+                pianoSounds.f.play();
+                keypressed['v'] = true;
+            }
+            break;
+        case 'b':
+            if(!keypressed['b']){
+                pianoSounds.g.play();
+                keypressed['b'] = true;
+            }
+            break;
+        case 'n':
+            if(!keypressed['n']){
+                pianoSounds.a.play();
+                keypressed['n'] = true;
+            }
+            break;
+        case 'm':
+            if(!keypressed['m']){
+                pianoSounds.b.play();
+                keypressed['m'] = true;
+            }
+            break;
+    }
+});
+document.body.addEventListener('keyup' ,(e) =>{
+    switch(e.key){
+        case 'z':
+            pianoSounds.c.pause();
+            pianoSounds.c.currentTime = 0;
+            keypressed['z'] = false;
+            break;
+        case 'x':
+            pianoSounds.d.pause();
+            pianoSounds.d.currentTime = 0;
+            keypressed['x'] = false;
+            break;
+        case 'c':
+            pianoSounds.e.pause();
+            pianoSounds.e.currentTime = 0;
+            keypressed['c'] = false;
+            break;
+        case 'v':
+            pianoSounds.f.pause();
+            pianoSounds.f.currentTime = 0;
+            keypressed['v'] = false;
+            break;
+        case 'b':
+            pianoSounds.g.pause();
+            pianoSounds.g.currentTime = 0;
+            keypressed['b'] = false;
+            break;
+        case 'n':
+            pianoSounds.a.pause();
+            pianoSounds.a.currentTime = 0;
+            keypressed['n'] = false;
+            break;
+        case 'm':
+            pianoSounds.b.pause();
+            pianoSounds.b.currentTime = 0;
+            keypressed['m'] = false;
+            break;
+    }
+});
 
 document.getElementById('d1').addEventListener('click', ()=>{
     test_play();
