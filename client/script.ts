@@ -35,6 +35,7 @@ document.body.addEventListener('keydown', (e) =>{
             if(!keypressed['z']){
                 attemptedPause['z'] = false;
                 clearTimeout(timeouts['z']);
+                pianoSounds.c.currentTime = 0;
                 pianoSounds.c.play();
                 keypressed['z'] = true;
                 timeouts['z'] = setTimeout(()=>{
@@ -47,38 +48,92 @@ document.body.addEventListener('keydown', (e) =>{
             break;
         case 'x':
             if(!keypressed['x']){
+                attemptedPause['x'] = false;
+                clearTimeout(timeouts['x']);
+                pianoSounds.d.currentTime = 0;
                 pianoSounds.d.play();
                 keypressed['x'] = true;
+                timeouts['x'] = setTimeout(()=>{
+                    if(!keypressed['x']){
+                        pianoSounds.d.pause();
+                    }
+                    attemptedPause['x'] = true;
+                }, 1000);
             }
             break;
         case 'c':
             if(!keypressed['c']){
+                attemptedPause['c'] = false;
+                clearTimeout(timeouts['c']);
+                pianoSounds.e.currentTime = 0;
                 pianoSounds.e.play();
                 keypressed['c'] = true;
+                timeouts['c'] = setTimeout(()=>{
+                    if(!keypressed['c']){
+                        pianoSounds.e.pause();
+                    }
+                    attemptedPause['c'] = true;
+                }, 1000);
             }
             break;
         case 'v':
             if(!keypressed['v']){
+                attemptedPause['v'] = false;
+                clearTimeout(timeouts['v']);
+                pianoSounds.f.currentTime = 0;
                 pianoSounds.f.play();
                 keypressed['v'] = true;
+                timeouts['v'] = setTimeout(()=>{
+                    if(!keypressed['v']){
+                        pianoSounds.f.pause();
+                    }
+                    attemptedPause['v'] = true;
+                }, 1000);
             }
             break;
         case 'b':
             if(!keypressed['b']){
+                attemptedPause['b'] = false;
+                clearTimeout(timeouts['b']);
+                pianoSounds.g.currentTime = 0;
                 pianoSounds.g.play();
                 keypressed['b'] = true;
+                timeouts['b'] = setTimeout(()=>{
+                    if(!keypressed['b']){
+                        pianoSounds.g.pause();
+                    }
+                    attemptedPause['b'] = true;
+                }, 1000);
             }
             break;
         case 'n':
             if(!keypressed['n']){
+                attemptedPause['n'] = false;
+                clearTimeout(timeouts['n']);
+                pianoSounds.a.currentTime = 0;
                 pianoSounds.a.play();
                 keypressed['n'] = true;
+                timeouts['n'] = setTimeout(()=>{
+                    if(!keypressed['n']){
+                        pianoSounds.a.pause();
+                    }
+                    attemptedPause['n'] = true;
+                }, 1000);
             }
             break;
         case 'm':
             if(!keypressed['m']){
+                attemptedPause['m'] = false;
+                clearTimeout(timeouts['m']);
+                pianoSounds.b.currentTime = 0;
                 pianoSounds.b.play();
                 keypressed['m'] = true;
+                timeouts['m'] = setTimeout(()=>{
+                    if(!keypressed['m']){
+                        pianoSounds.b.pause();
+                    }
+                    attemptedPause['m'] = true;
+                }, 1000);
             }
             break;
     }
@@ -89,37 +144,42 @@ document.body.addEventListener('keyup' ,(e) =>{
             if(attemptedPause['z']){
                 pianoSounds.c.pause();
             }
-            pianoSounds.c.currentTime = 0;
             keypressed['z'] = false;
             break;
         case 'x':
-            pianoSounds.d.pause();
-            pianoSounds.d.currentTime = 0;
+            if(attemptedPause['x']){
+                pianoSounds.d.pause();
+            }
             keypressed['x'] = false;
             break;
         case 'c':
-            pianoSounds.e.pause();
-            pianoSounds.e.currentTime = 0;
+            if(attemptedPause['c']){
+                pianoSounds.e.pause();
+            }
             keypressed['c'] = false;
             break;
         case 'v':
-            pianoSounds.f.pause();
-            pianoSounds.f.currentTime = 0;
+            if(attemptedPause['v']){
+                pianoSounds.f.pause();
+            }
             keypressed['v'] = false;
             break;
         case 'b':
-            pianoSounds.g.pause();
-            pianoSounds.g.currentTime = 0;
+            if(attemptedPause['b']){
+                pianoSounds.g.pause();
+            }
             keypressed['b'] = false;
             break;
         case 'n':
-            pianoSounds.a.pause();
-            pianoSounds.a.currentTime = 0;
+            if(attemptedPause['n']){
+                pianoSounds.a.pause();
+            }
             keypressed['n'] = false;
             break;
         case 'm':
-            pianoSounds.b.pause();
-            pianoSounds.b.currentTime = 0;
+            if(attemptedPause['m']){
+                pianoSounds.b.pause();
+            }
             keypressed['m'] = false;
             break;
     }
@@ -157,19 +217,70 @@ let sequence = [
     'g',
     'a',
     'a',
-    'g'
+    'g*',
+    'f',
+    'f',
+    'e',
+    'e',
+    'd',
+    'd',
+    'c*',
+    'g',
+    'g',
+    'f',
+    'f',
+    'e',
+    'e',
+    'd*',
+    'g',
+    'g',
+    'f',
+    'f',
+    'e',
+    'e',
+    'd*',
+    'c', 
+    'c', 
+    'g', 
+    'g',
+    'a',
+    'a',
+    'g*',
+    'f',
+    'f',
+    'e',
+    'e',
+    'd',
+    'd',
+    'c$',
 ];
-let delayTimeMilliSec = 250;
+let tempo = 240; //beats per minute
+let qtrNoteDelay = 60*1000/tempo;
+let hfNoteDelay = qtrNoteDelay*2;
+let wholeNoteDelay = qtrNoteDelay*4;
 
+// tempo/4*60
+//tempo = time of peice/ how many beats 
 function delay(time) {
     return new Promise(resolve => { setTimeout(() => resolve(''), time); });
 }
 
 async function test_play() {
     for(let i=0; i<sequence.length; i++){
-       pianoSounds[sequence[i]].play();
-       await delay(delayTimeMilliSec);
-       pianoSounds[sequence[i]].pause();
-       pianoSounds[sequence[i]].currentTime = 0;
+        pianoSounds[sequence[i][0]].play();
+        if(sequence[i].length > 1){
+            switch(sequence[i][1]){
+                case '*': 
+                    await delay(hfNoteDelay);
+                    break;
+                case '$':
+                    await delay(wholeNoteDelay);
+                    break;
+            }
+        }else{
+           await delay(qtrNoteDelay);
+        }
+        pianoSounds[sequence[i][0]].pause();
+        pianoSounds[sequence[i][0]].currentTime = 0;
     }    
 }
