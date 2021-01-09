@@ -11,12 +11,38 @@ let keypressed:{[key:string]: boolean} = {
     n: false,
     m: false
 };
+let attemptedPause:{[key:string]: boolean} = {
+    z: false, 
+    x: false, 
+    c: false, 
+    v: false,
+    b: false,
+    n: false,
+    m: false
+};
+let timeouts:{[key:string]: any} = {
+    z: 0, 
+    x: 0, 
+    c: 0, 
+    v: 0,
+    b: 0,
+    n: 0,
+    m: 0
+};
 document.body.addEventListener('keydown', (e) =>{
     switch(e.key){
         case 'z':
             if(!keypressed['z']){
+                attemptedPause['z'] = false;
+                clearTimeout(timeouts['z']);
                 pianoSounds.c.play();
                 keypressed['z'] = true;
+                timeouts['z'] = setTimeout(()=>{
+                    if(!keypressed['z']){
+                        pianoSounds.c.pause();
+                    }
+                    attemptedPause['z'] = true;
+                }, 1000);
             }
             break;
         case 'x':
@@ -60,7 +86,9 @@ document.body.addEventListener('keydown', (e) =>{
 document.body.addEventListener('keyup' ,(e) =>{
     switch(e.key){
         case 'z':
-            pianoSounds.c.pause();
+            if(attemptedPause['z']){
+                pianoSounds.c.pause();
+            }
             pianoSounds.c.currentTime = 0;
             keypressed['z'] = false;
             break;
