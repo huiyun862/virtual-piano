@@ -29,160 +29,55 @@ let timeouts:{[key:string]: any} = {
     n: 0,
     m: 0
 };
+let keyNoteLink: {[key:string]: string} = {
+    'z': 'c', 
+    'x': 'd',
+    'c': 'e',
+    'v': 'f',
+    'b': 'g',
+    'n': 'a',
+    'm': 'b'
+}; 
+let noteKeyLink: {[key:string]: string} = {
+    'c': 'z', 
+    'd': 'x',
+    'e': 'c',
+    'f': 'v',
+    'g': 'b',
+    'a': 'n',
+    'b': 'm'
+}; 
+function keyboardPianoPress(key:string){
+    if(keyNoteLink.hasOwnProperty(key) && !keypressed[key]){
+        document.getElementById(keyNoteLink[key] + '-key').classList.add('clicked');
+        attemptedPause[key] = false;
+        clearTimeout(timeouts[key]);
+        pianoSounds[keyNoteLink[key]].currentTime = 0;
+        pianoSounds[keyNoteLink[key]].play();
+        keypressed[key] = true;
+        timeouts[key] = setTimeout(()=>{
+            if(!keypressed[key]){
+                pianoSounds[keyNoteLink[key]].pause();
+            }
+            attemptedPause[key] = true;
+        }, 1000);
+    }
+}
+
 document.body.addEventListener('keydown', (e) =>{
-    switch(e.key){
-        case 'z':
-            if(!keypressed['z']){
-                attemptedPause['z'] = false;
-                clearTimeout(timeouts['z']);
-                pianoSounds.c.currentTime = 0;
-                pianoSounds.c.play();
-                keypressed['z'] = true;
-                timeouts['z'] = setTimeout(()=>{
-                    if(!keypressed['z']){
-                        pianoSounds.c.pause();
-                    }
-                    attemptedPause['z'] = true;
-                }, 1000);
-            }
-            break;
-        case 'x':
-            if(!keypressed['x']){
-                attemptedPause['x'] = false;
-                clearTimeout(timeouts['x']);
-                pianoSounds.d.currentTime = 0;
-                pianoSounds.d.play();
-                keypressed['x'] = true;
-                timeouts['x'] = setTimeout(()=>{
-                    if(!keypressed['x']){
-                        pianoSounds.d.pause();
-                    }
-                    attemptedPause['x'] = true;
-                }, 1000);
-            }
-            break;
-        case 'c':
-            if(!keypressed['c']){
-                attemptedPause['c'] = false;
-                clearTimeout(timeouts['c']);
-                pianoSounds.e.currentTime = 0;
-                pianoSounds.e.play();
-                keypressed['c'] = true;
-                timeouts['c'] = setTimeout(()=>{
-                    if(!keypressed['c']){
-                        pianoSounds.e.pause();
-                    }
-                    attemptedPause['c'] = true;
-                }, 1000);
-            }
-            break;
-        case 'v':
-            if(!keypressed['v']){
-                attemptedPause['v'] = false;
-                clearTimeout(timeouts['v']);
-                pianoSounds.f.currentTime = 0;
-                pianoSounds.f.play();
-                keypressed['v'] = true;
-                timeouts['v'] = setTimeout(()=>{
-                    if(!keypressed['v']){
-                        pianoSounds.f.pause();
-                    }
-                    attemptedPause['v'] = true;
-                }, 1000);
-            }
-            break;
-        case 'b':
-            if(!keypressed['b']){
-                attemptedPause['b'] = false;
-                clearTimeout(timeouts['b']);
-                pianoSounds.g.currentTime = 0;
-                pianoSounds.g.play();
-                keypressed['b'] = true;
-                timeouts['b'] = setTimeout(()=>{
-                    if(!keypressed['b']){
-                        pianoSounds.g.pause();
-                    }
-                    attemptedPause['b'] = true;
-                }, 1000);
-            }
-            break;
-        case 'n':
-            if(!keypressed['n']){
-                attemptedPause['n'] = false;
-                clearTimeout(timeouts['n']);
-                pianoSounds.a.currentTime = 0;
-                pianoSounds.a.play();
-                keypressed['n'] = true;
-                timeouts['n'] = setTimeout(()=>{
-                    if(!keypressed['n']){
-                        pianoSounds.a.pause();
-                    }
-                    attemptedPause['n'] = true;
-                }, 1000);
-            }
-            break;
-        case 'm':
-            if(!keypressed['m']){
-                attemptedPause['m'] = false;
-                clearTimeout(timeouts['m']);
-                pianoSounds.b.currentTime = 0;
-                pianoSounds.b.play();
-                keypressed['m'] = true;
-                timeouts['m'] = setTimeout(()=>{
-                    if(!keypressed['m']){
-                        pianoSounds.b.pause();
-                    }
-                    attemptedPause['m'] = true;
-                }, 1000);
-            }
-            break;
-    }
+    keyboardPianoPress(e.key);
 });
-document.body.addEventListener('keyup' ,(e) =>{
-    switch(e.key){
-        case 'z':
-            if(attemptedPause['z']){
-                pianoSounds.c.pause();
-            }
-            keypressed['z'] = false;
-            break;
-        case 'x':
-            if(attemptedPause['x']){
-                pianoSounds.d.pause();
-            }
-            keypressed['x'] = false;
-            break;
-        case 'c':
-            if(attemptedPause['c']){
-                pianoSounds.e.pause();
-            }
-            keypressed['c'] = false;
-            break;
-        case 'v':
-            if(attemptedPause['v']){
-                pianoSounds.f.pause();
-            }
-            keypressed['v'] = false;
-            break;
-        case 'b':
-            if(attemptedPause['b']){
-                pianoSounds.g.pause();
-            }
-            keypressed['b'] = false;
-            break;
-        case 'n':
-            if(attemptedPause['n']){
-                pianoSounds.a.pause();
-            }
-            keypressed['n'] = false;
-            break;
-        case 'm':
-            if(attemptedPause['m']){
-                pianoSounds.b.pause();
-            }
-            keypressed['m'] = false;
-            break;
+function keyboardPianoRelease(key:string){
+    if(keyNoteLink.hasOwnProperty(key)){
+        document.getElementById(keyNoteLink[key] + '-key').classList.remove('clicked');
+        if(attemptedPause[key]){
+            pianoSounds[keyNoteLink[key]].pause();
+        }
+        keypressed[key] = false;
     }
+}
+document.body.addEventListener('keyup', (e) =>{
+    keyboardPianoRelease(e.key);
 });
 
 document.getElementById('d1').addEventListener('click', ()=>{
@@ -267,7 +162,8 @@ function delay(time) {
 
 async function test_play() {
     for(let i=0; i<sequence.length; i++){
-        pianoSounds[sequence[i][0]].play();
+        // pianoSounds[sequence[i][0]].play();
+        keyboardPianoPress(noteKeyLink[sequence[i][0]]);
         if(sequence[i].length > 1){
             switch(sequence[i][1]){
                 case '*': 
@@ -280,7 +176,23 @@ async function test_play() {
         }else{
            await delay(qtrNoteDelay);
         }
-        pianoSounds[sequence[i][0]].pause();
-        pianoSounds[sequence[i][0]].currentTime = 0;
+        // pianoSounds[sequence[i][0]].pause();
+        // pianoSounds[sequence[i][0]].currentTime = 0;
+        keyboardPianoRelease(noteKeyLink[sequence[i][0]]);
     }    
 }
+
+
+let piano = document.querySelector('.piano');
+let keyClicked = null;
+
+
+piano.addEventListener('mousedown', (e:any)=>{
+    keyClicked = e.target.getAttribute('id').charAt(0);
+    keyboardPianoPress(noteKeyLink[keyClicked]);
+});
+document.body.addEventListener('mouseup', (e:any)=>{
+    if(keyClicked){
+        keyboardPianoRelease(noteKeyLink[keyClicked]);
+    }
+});

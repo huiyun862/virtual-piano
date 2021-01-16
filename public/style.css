@@ -1,0 +1,17 @@
+.body{
+    margin: 0;
+}
+.piano{
+    overflow: auto;
+    user-select: none;
+}
+.piano .key{
+    width: 20px;
+    height: 40px;
+    background-color: palegoldenrod;
+    border: 1px solid black;
+    float: left;
+}
+.piano .key.clicked{
+    background-color: powderblue;
+}
