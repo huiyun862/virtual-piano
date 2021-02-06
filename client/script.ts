@@ -1,7 +1,56 @@
+import e = require("express");
+
 let b = new Audio('/sounds/piano_B.mp3')
 let c = new Audio('/sounds/softmiddleC.wav')
 let train = new Audio('/sounds/train.mp3')
 // document.body.appendChild(b);
+
+interface Bar{
+    element: HTMLElement,
+    generated: boolean,
+    height: number,
+    bottom: number,
+}
+
+function createBar(target: string): Bar{
+    let bar: Bar = {
+        element: document.createElement('div'), 
+        generated: false,
+        height: 0,
+        bottom: 0
+    };
+    bar.element.setAttribute('class', 'bar');
+    bar.element.style.height = '0px';
+    bar.element.style.bottom = '0px';
+    document.getElementById(target).appendChild(bar.element);
+    return bar;
+}
+function finishBar(map: {[key: string]: Bar[]}, note: string){
+    let arr = map[note];
+    if(arr.length > 0){
+        arr[arr.length - 1].generated = true;
+    }
+}
+function processBars(map: {[key: string]: Bar[]}) {
+    let i;
+    Object.keys(map).forEach((key)=>{
+        for(i = 0; i < map[key].length; i++){
+            if(map[key][i].generated){
+                map[key][i].bottom+= 5;
+                map[key][i].element.style.bottom = map[key][i].bottom + 'px';
+            }else if(map[key][i].height < 300){
+                map[key][i].height+= 5;
+                map[key][i].element.style.height = map[key][i].height + 'px';
+            }
+            if(map[key][i].bottom > 300){
+                let bar = map[key].splice(i, 1)[0];
+                bar.element.remove();
+                i--;
+            }
+        }
+    });
+}
+
 let keypressed:{[key:string]: boolean} = {
     z: false, 
     x: false, 
@@ -50,6 +99,7 @@ let noteKeyLink: {[key:string]: string} = {
 function keyboardPianoPress(key:string){
     if(keyNoteLink.hasOwnProperty(key) && !keypressed[key]){
         document.getElementById(keyNoteLink[key] + '-key').classList.add('clicked');
+        barArrayMap[keyNoteLink[key]].push(createBar(keyNoteLink[key] + '-bar-col'));
         attemptedPause[key] = false;
         clearTimeout(timeouts[key]);
         pianoSounds[keyNoteLink[key]].currentTime = 0;
@@ -70,6 +120,7 @@ document.body.addEventListener('keydown', (e) =>{
 function keyboardPianoRelease(key:string){
     if(keyNoteLink.hasOwnProperty(key)){
         document.getElementById(keyNoteLink[key] + '-key').classList.remove('clicked');
+        finishBar(barArrayMap, keyNoteLink[key]);
         if(attemptedPause[key]){
             pianoSounds[keyNoteLink[key]].pause();
         }
@@ -103,51 +154,51 @@ let pianoSounds:{[key:string]: HTMLAudioElement} = {
     b: null
 };
 Object.keys(pianoSounds).forEach(key =>{
-    pianoSounds[key] = new Audio('/sounds/piano_sounds/'+key+'5.mp3');
+    pianoSounds[key] = createSound('/sounds/piano_sounds/'+key+'5.mp3');
 });
 let sequence = [
     'c', 
+    'c,d,e2', 
+    'g', 
+    'g',
+    'a',
+    'a',
+    'g1',
+    'f',
+    'f',
+    'e',
+    'e',
+    'd',
+    'd',
+    'c1',
+    'g',
+    'g',
+    'f',
+    'f',
+    'e',
+    'e',
+    'd1',
+    'g',
+    'g',
+    'f',
+    'f',
+    'e',
+    'e',
+    'd1',
+    'c', 
     'c', 
     'g', 
     'g',
     'a',
     'a',
-    'g*',
+    'g1',
     'f',
     'f',
     'e',
     'e',
     'd',
     'd',
-    'c*',
-    'g',
-    'g',
-    'f',
-    'f',
-    'e',
-    'e',
-    'd*',
-    'g',
-    'g',
-    'f',
-    'f',
-    'e',
-    'e',
-    'd*',
-    'c', 
-    'c', 
-    'g', 
-    'g',
-    'a',
-    'a',
-    'g*',
-    'f',
-    'f',
-    'e',
-    'e',
-    'd',
-    'd',
-    'c$',
+    'c2,e2,g2',
 ];
 let tempo = 240; //beats per minute
 let qtrNoteDelay = 60*1000/tempo;
@@ -159,28 +210,95 @@ let wholeNoteDelay = qtrNoteDelay*4;
 function delay(time) {
     return new Promise(resolve => { setTimeout(() => resolve(''), time); });
 }
-
+function multiRelease(noteArray:string[]) {
+    return new Promise(resolve => {
+        let longest = 0;
+        let resolved = false;
+        for(let i=0; i<noteArray.length; i++){
+            if(noteArray[i].length > 1){
+                if(parseInt(noteArray[i][1])>longest){
+                    longest = parseInt(noteArray[i][1]);
+                }
+            }
+        }
+        for(let i=0; i<noteArray.length; i++) {
+            if(noteArray[i].length > 1){
+                switch(noteArray[i][1]){
+                    case '1': 
+                        delay(hfNoteDelay).then(()=>{
+                            keyboardPianoRelease(noteKeyLink[noteArray[i][0]]);
+                            if(longest==1 && !resolved){
+                                resolved = true;
+                                resolve('');
+                            }
+                        });
+                        break;
+                    case '2':
+                        delay(wholeNoteDelay).then(()=>{
+                            keyboardPianoRelease(noteKeyLink[noteArray[i][0]]);
+                            if(longest==2 && !resolved){
+                                resolved = true;
+                                resolve('');
+                            }
+                        });
+                        break;
+                }
+            }else{
+                delay(qtrNoteDelay).then(()=>{
+                    keyboardPianoRelease(noteKeyLink[noteArray[i][0]]);
+                    if(longest==0 && !resolved){
+                        resolved = true;
+                        resolve('');
+                    }
+                });
+            }
+        }
+    });
+}
 async function test_play() {
     for(let i=0; i<sequence.length; i++){
         // pianoSounds[sequence[i][0]].play();
-        keyboardPianoPress(noteKeyLink[sequence[i][0]]);
-        if(sequence[i].length > 1){
-            switch(sequence[i][1]){
-                case '*': 
-                    await delay(hfNoteDelay);
-                    break;
-                case '$':
-                    await delay(wholeNoteDelay);
-                    break;
-            }
-        }else{
-           await delay(qtrNoteDelay);
+        let noteArray = sequence[i].split(',');
+        for(let j=0; j<noteArray.length; j++){
+            keyboardPianoPress(noteKeyLink[noteArray[j][0]]);
         }
-        // pianoSounds[sequence[i][0]].pause();
-        // pianoSounds[sequence[i][0]].currentTime = 0;
-        keyboardPianoRelease(noteKeyLink[sequence[i][0]]);
+        // if(sequence[i].length > 1){
+        //     switch(sequence[i][1]){
+        //         case '*': 
+        //             await delay(hfNoteDelay);
+        //             break;
+        //         case '$':
+        //             await delay(wholeNoteDelay);
+        //             break;
+        //     }
+        // }else{
+        //    await delay(qtrNoteDelay);
+        // }
+        // keyboardPianoRelease(noteKeyLink[sequence[i][0]]);
+        await multiRelease(noteArray);
     }    
 }
+
+function createSound(src: string): HTMLAudioElement{
+    let sound = document.createElement('audio');
+    sound.src = src;
+    sound.setAttribute("preload", "auto");
+    sound.setAttribute("controls", "false");
+    sound.style.display = "none";
+    document.body.appendChild(sound);
+    return sound;
+}
+
+let barArrayMap: {[key: string]: Bar[]} = {
+    c: [],
+    d: [],
+    e: [],
+    f: [],
+    g: [],
+    a: [],
+    b: []
+}
+
 
 
 let piano = document.querySelector('.piano');
@@ -196,3 +314,7 @@ document.body.addEventListener('mouseup', (e:any)=>{
         keyboardPianoRelease(noteKeyLink[keyClicked]);
     }
 });
+
+setInterval(()=>{
+    processBars(barArrayMap);
+}, 50);

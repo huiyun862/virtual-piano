@@ -1,10 +1,38 @@
 .body{
     margin: 0;
 }
+.piano-logger{
+    overflow: auto;
+}
+.bar-log{
+    overflow: auto;
+    float: left;
+    background-color: darkslategrey;
+}
+.bar-log .bar-column{
+    width: 20px;
+    height: 300px;
+    float: left;
+    border-left: 1px solid #00000000;
+    border-right: 1px solid #00000000;
+    position: relative;
+}
+.bar-column .bar{
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    background-color: peachpuff;
+    box-shadow: 0px 0px 10px peachpuff;
+    box-sizing: border-box;
+    transform:scaleY(0.9);
+}
 .piano{
     overflow: auto;
     user-select: none;
+    float: left;
+    clear: both;
 }
+
 .piano .key{
     width: 20px;
     height: 40px;
