@@ -1,4 +1,8 @@
-import e = require("express");
+import * as $ from 'jquery';
+
+
+
+
 
 let b = new Audio('/sounds/piano_B.mp3')
 let c = new Audio('/sounds/softmiddleC.wav')
@@ -137,10 +141,14 @@ document.getElementById('d1').addEventListener('click', ()=>{
     // b.currentTime = 0;
 });
 document.getElementById('d2').addEventListener('click', ()=>{
-    c.play();
+    $.get('/sequence/seq1').then((data) =>{
+        sequence = data;
+    });
 });
 document.getElementById('d3').addEventListener('click', ()=>{
-    train.play();
+    $.get('/sequence/seq2').then((data) =>{
+        sequence = data;
+    });
 });
 
 
@@ -157,48 +165,48 @@ Object.keys(pianoSounds).forEach(key =>{
     pianoSounds[key] = createSound('/sounds/piano_sounds/'+key+'5.mp3');
 });
 let sequence = [
-    'c', 
-    'c,d,e2', 
-    'g', 
-    'g',
-    'a',
-    'a',
-    'g1',
-    'f',
-    'f',
-    'e',
-    'e',
-    'd',
-    'd',
-    'c1',
-    'g',
-    'g',
-    'f',
-    'f',
-    'e',
-    'e',
-    'd1',
-    'g',
-    'g',
-    'f',
-    'f',
-    'e',
-    'e',
-    'd1',
-    'c', 
-    'c', 
-    'g', 
-    'g',
-    'a',
-    'a',
-    'g1',
-    'f',
-    'f',
-    'e',
-    'e',
-    'd',
-    'd',
-    'c2,e2,g2',
+    // 'c', 
+    // 'c,d,e2', 
+    // 'g', 
+    // 'g',
+    // 'a',
+    // 'a',
+    // 'g1',
+    // 'f',
+    // 'f',
+    // 'e',
+    // 'e',
+    // 'd',
+    // 'd',
+    // 'c1',
+    // 'g',
+    // 'g',
+    // 'f',
+    // 'f',
+    // 'e',
+    // 'e',
+    // 'd1',
+    // 'g',
+    // 'g',
+    // 'f',
+    // 'f',
+    // 'e',
+    // 'e',
+    // 'd1',
+    // 'c', 
+    // 'c', 
+    // 'g', 
+    // 'g',
+    // 'a',
+    // 'a',
+    // 'g1',
+    // 'f',
+    // 'f',
+    // 'e',
+    // 'e',
+    // 'd',
+    // 'd',
+    // 'c2,e2,g2',
 ];
 let tempo = 240; //beats per minute
 let qtrNoteDelay = 60*1000/tempo;
