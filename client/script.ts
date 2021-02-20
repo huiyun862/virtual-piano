@@ -234,7 +234,9 @@ function multiRelease(noteArray:string[]) {
                 switch(noteArray[i][1]){
                     case '1': 
                         delay(hfNoteDelay).then(()=>{
-                            keyboardPianoRelease(noteKeyLink[noteArray[i][0]]);
+                            if(noteArray[i][0] != 'h'){
+                                keyboardPianoRelease(noteKeyLink[noteArray[i][0]]);
+                            }
                             if(longest==1 && !resolved){
                                 resolved = true;
                                 resolve('');
@@ -243,7 +245,9 @@ function multiRelease(noteArray:string[]) {
                         break;
                     case '2':
                         delay(wholeNoteDelay).then(()=>{
-                            keyboardPianoRelease(noteKeyLink[noteArray[i][0]]);
+                            if(noteArray[i][0] != 'h'){
+                                keyboardPianoRelease(noteKeyLink[noteArray[i][0]]);
+                            }
                             if(longest==2 && !resolved){
                                 resolved = true;
                                 resolve('');
@@ -253,7 +257,9 @@ function multiRelease(noteArray:string[]) {
                 }
             }else{
                 delay(qtrNoteDelay).then(()=>{
-                    keyboardPianoRelease(noteKeyLink[noteArray[i][0]]);
+                    if(noteArray[i][0] != 'h'){
+                        keyboardPianoRelease(noteKeyLink[noteArray[i][0]]);
+                    }
                     if(longest==0 && !resolved){
                         resolved = true;
                         resolve('');
@@ -268,7 +274,11 @@ async function test_play() {
         // pianoSounds[sequence[i][0]].play();
         let noteArray = sequence[i].split(',');
         for(let j=0; j<noteArray.length; j++){
-            keyboardPianoPress(noteKeyLink[noteArray[j][0]]);
+            if(noteArray[0][0] == 'h'){
+                break;
+            }else{
+                keyboardPianoPress(noteKeyLink[noteArray[j][0]]);
+            }
         }
         // if(sequence[i].length > 1){
         //     switch(sequence[i][1]){
