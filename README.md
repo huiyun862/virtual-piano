@@ -24,4 +24,4 @@ This will start a server running on port 8000. Connect to it using a browser by 
 
 To interact with the piano, use the mouse, touchscreen, or keys: [z, x, c, v, b, n, m]. 
 
-<img src="images/piano.png" width="300px" >
+<img src="images/Piano.PNG" width="300px" >
