@@ -1,21 +1,11 @@
-import * as $ from 'jquery';
-
-
-
-
-
-let b = new Audio('/sounds/piano_B.mp3')
-let c = new Audio('/sounds/softmiddleC.wav')
-let train = new Audio('/sounds/train.mp3')
-// document.body.appendChild(b);
-
 interface Bar{
     element: HTMLElement,
     generated: boolean,
     height: number,
     bottom: number,
 }
-
+let screenHeight = window.innerHeight;
+let barColH = screenHeight * 0.85;
 function createBar(target: string): Bar{
     let bar: Bar = {
         element: document.createElement('div'), 
@@ -32,7 +22,14 @@ function createBar(target: string): Bar{
 function finishBar(map: {[key: string]: Bar[]}, note: string){
     let arr = map[note];
     if(arr.length > 0){
-        arr[arr.length - 1].generated = true;
+        let bar = arr[arr.length - 1];
+        bar.generated = true;
+        if(bar.height > 2){
+            bar.height -= 2;
+            bar.element.style.height = bar.height + 'px';
+            bar.bottom += 2;
+            bar.element.style.bottom = bar.bottom + 'px';
+        }
     }
 }
 function processBars(map: {[key: string]: Bar[]}) {
@@ -42,11 +39,11 @@ function processBars(map: {[key: string]: Bar[]}) {
             if(map[key][i].generated){
                 map[key][i].bottom+= 5;
                 map[key][i].element.style.bottom = map[key][i].bottom + 'px';
-            }else if(map[key][i].height < 300){
+            }else if(map[key][i].height < barColH){
                 map[key][i].height+= 5;
                 map[key][i].element.style.height = map[key][i].height + 'px';
             }
-            if(map[key][i].bottom > 300){
+            if(map[key][i].bottom > barColH){
                 let bar = map[key].splice(i, 1)[0];
                 bar.element.remove();
                 i--;
@@ -330,6 +327,21 @@ piano.addEventListener('mousedown', (e:any)=>{
 document.body.addEventListener('mouseup', (e:any)=>{
     if(keyClicked){
         keyboardPianoRelease(noteKeyLink[keyClicked]);
+    }
+});
+piano.addEventListener('touchstart', (e:any)=>{
+    keyClicked = e.target.getAttribute('id').charAt(0);
+    keyboardPianoPress(noteKeyLink[keyClicked]);
+});
+document.body.addEventListener('touchend', (e:any)=>{
+    if(keyClicked){
+        keyboardPianoRelease(noteKeyLink[keyClicked]);
+    }
+});
+window.addEventListener('resize', ()=>{
+    if(window.innerHeight != screenHeight){
+        screenHeight = window.innerHeight;
+        barColH = screenHeight * 0.85;
     }
 });
 
