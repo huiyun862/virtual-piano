@@ -22,7 +22,7 @@ app.use('/sounds', express.static(path.resolve(__dirname, 'sounds')));
 app.use('/sequence', seqRouter)
 var server = http.createServer(app);
 console.log('Server is online!');
-server.listen(8000);
+server.listen(process.env.PORT || 8000);
 
 export interface Car{
     wheels: number;
